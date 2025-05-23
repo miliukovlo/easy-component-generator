@@ -24,4 +24,20 @@ npm install -g easy-component-generator
 
 ```bash
 easy-gen
+
+? What need to create? (Use arrow keys)
+> Component
+  Block
+  UI
+
+? What need to create? Component
+? Write title of component: *Your title*
+
+? What need to create? Component
+? Write title of component: *Your title*
+✅ File *Your title*.tsx was created!
+✅ File *Your title*Types.ts was created!
+✅ File index.ts was created!
+🎉 Component "*Your title*" was generated!
+✅ Parent index.ts updated!
 ```
