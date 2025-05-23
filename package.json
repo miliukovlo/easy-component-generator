@@ -1,0 +1,33 @@
+{
+  "name": "easy-component-generator",
+  "version": "1.0.1",
+  "type": "commonjs",
+  "main": "dist/generator.js",
+  "bin": {
+    "easy-gen": "./bin/cli.js"
+  },
+  "author": {
+    "name": "Leonid",
+    "url": "github.com/miliukovlo",
+    "email": "leonid.miliukov@yandex.ru"
+  },
+  "scripts": {
+    "build": "tsc && webpack",
+    "start": "node dist/generator.js"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "fs-extra": "^11.3.0",
+    "inquirer": "^8.2.6"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.2.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^8.2.11",
+    "@types/node": "^20.11.1",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
