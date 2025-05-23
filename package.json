@@ -3,6 +3,7 @@
   "version": "1.0.4",
   "type": "commonjs",
   "main": "dist/generator.js",
+  "license": "MIT",
   "bin": {
     "easy-gen": "./bin/cli.js"
   },
