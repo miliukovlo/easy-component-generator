@@ -28,7 +28,7 @@ async function init() {
       filter: (input: string) => capitalizeFirstLetter(input),
     });
   
-    const baseDir = type === 'Component' ? 'src/components' : type === 'Block' ? 'src/blocks' : 'src/UI';
+    const baseDir = type === 'Component' ? 'src/components' : type === 'Block' ? 'src/blocks' : 'src/UI-KIT';
     const componentDir = path.join(baseDir, name);
     
     try {
