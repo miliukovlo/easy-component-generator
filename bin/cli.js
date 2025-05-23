@@ -1,2 +1,2 @@
 #!/usr/bin/env node
-require('../dist/generator.js');
+require('../dist/index.js');
