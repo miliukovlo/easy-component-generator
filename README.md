@@ -29,6 +29,9 @@ easy-gen
 > Component
   Block
   UI
+  Type
+  Hook
+  Other
 
 ? What need to create? Component
 ? Write title of component: *Your title*

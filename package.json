@@ -1,6 +1,6 @@
 {
   "name": "easy-component-generator",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "commonjs",
   "main": "dist/generator.js",
   "keywords": ["generator", "component", "easy", "cli", "creating", "type", "hook"],

@@ -1,6 +1,6 @@
 export function getComponentTemplate(name: string) {
     return `import React from 'react';
-  import { ${name}Props } from './${name}Types';
+import { ${name}Props } from './${name}Types';
   
   export const ${name} = (props: ${name}Props) => {
     return (
@@ -35,4 +35,26 @@ export function getFileTemplate(name: string) {
     return `export const ${name} = () => {
         //Write here
     };`;
+}
+
+export function getStorybookTemplate(name: string) {
+  return `import React from 'react';
+import { ${name} } from './${name}';
+import type { Meta, StoryObj } from '@storybook/react';
+
+const meta: Meta<typeof ${name}> = {
+  title: 'Components/${name}',
+  component: ${name},
+  tags: ['autodocs'],
+};
+
+export default meta;
+type Story = StoryObj<typeof ${name}>;
+
+export const Default: Story = {
+  args: {
+      // Default props here
+  },
+};
+`;
 }
