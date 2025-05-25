@@ -7,7 +7,7 @@ import {
     getStorybookTemplate
 } from "../Templates";
 
-export const getFiles = (type: string, name: string, skipStorybook: boolean = false) => {
+export const getFiles = (type: string, name: string, needStorybook: boolean = false) => {
     const baseFiles = ['UI', 'Component', 'Block'].includes(type) 
         ? [
             { name: `${name}.tsx`, content: getComponentTemplate(name) },
@@ -25,7 +25,7 @@ export const getFiles = (type: string, name: string, skipStorybook: boolean = fa
             { name: 'index.ts', content: `export * from './${name}';\n` }
         ];
 
-    if (!skipStorybook && ['UI', 'Component', 'Block'].includes(type)) {
+    if (needStorybook && ['UI', 'Component', 'Block'].includes(type)) {
         baseFiles.push({
             name: `${name}.stories.tsx`,
             content: getStorybookTemplate(name)
