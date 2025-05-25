@@ -2,103 +2,79 @@ import chalk = require('chalk');
 import fs = require('fs-extra');
 import path = require('path');
 import inquirer = require('inquirer');
-
-function capitalizeFirstLetter(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import { updateParentIndex } from './Helpers/updateParentIndex';
+import { capitalizeFirstLetter } from './Helpers/capitalizeFirstLetter';
+import { openInEditor } from './Helpers/openInEditor';
+import { getFiles } from './Helpers/getFiles';
+import { getBaseDir } from './Helpers/getBaseDir';
 
 async function init() {
     console.log(chalk.blue('🛠 Components generator'));
+    let customDir;
   
     const { type } = await inquirer.prompt({
       type: 'list',
       name: 'type',
       message: 'What need to create?',
-      choices: ['Component', 'Block', 'UI'],
+      choices: ['Component', 'Block', 'UI', 'Type', 'Hook', 'Other'],
     });
+
+    if (type === 'Other') {
+      const { dir } = await inquirer.prompt({
+        type: 'input',
+        name: 'dir',
+        message: `Write specific dir:`,
+        validate: (input: string) => {
+          if (!input.trim()) return 'Dir can`t be empty!';
+          return true;
+        },
+      });
+      customDir = dir
+    }
   
     const { name } = await inquirer.prompt({
       type: 'input',
       name: 'name',
-      message: `Write title of ${type === 'Component' ? 'component' : type === 'Block' ? 'block' : 'UI-element'}:`,
+      message: `Write title of ${type === 'Component' ? 'component' :
+          type === 'Block' ? 'block' :
+          type === 'UI' ? 'UI-element' :
+          type === 'Type' ? 'type' : 
+          type === 'Hook' ? 'hook' : 
+          'file'}`,
       validate: (input: string) => {
         if (!input.trim()) return 'Title can`t be empty!';
         return true;
       },
-      filter: (input: string) => capitalizeFirstLetter(input),
+      filter: (input: string) => type === 'Hook' && input.startsWith('use') ? input : capitalizeFirstLetter(input),
     });
   
-    const baseDir = type === 'Component' ? 'src/components' : type === 'Block' ? 'src/blocks' : 'src/UI-KIT';
-    const componentDir = path.join(baseDir, name);
+    const baseDir = getBaseDir(type, customDir)
+
+    const componentDir = path.join(baseDir, type === 'Type' ? name.replace(/(Types?)$/, '') :
+      type === 'Hook' ? `${name.startsWith('use') ? '' : 'use'}${name}` :
+      name);
     
     try {
       await fs.ensureDir(componentDir);
   
-      const files = [
-        { name: `${name}.tsx`, content: getComponentTemplate(name) },
-        { name: `${name}Types.ts`, content: getTypesTemplate(name) },
-        { name: 'index.ts', content: `export * from './${name}';\n` },
-      ];
+      const files = getFiles(type, name)
+
+      const createdFiles: string[] = [];
   
       for (const file of files) {
         const filePath = path.join(componentDir, file.name);
         await fs.writeFile(filePath, file.content);
+        createdFiles.push(filePath);
         console.log(chalk.green(`✅ File ${file.name} was created!`));
       }
-  
+      const filesToOpen = createdFiles.filter(file => !file.endsWith('index.ts'));
+      openInEditor(filesToOpen);
       console.log(chalk.bold(`🎉 ${type} "${name}" was generated!`));
     } catch (error) {
       console.error(chalk.red('❌ Error of created:'), error);
     }
 
-    await updateParentIndex(baseDir);
-}
-
-function getComponentTemplate(name: string) {
-  return `import React from 'react';
-import { ${name}Props } from './${name}Types';
-
-export const ${name} = (props: ${name}Props) => {
-  return (
-    <div>${name} component</div>
-  );
-};
-`;
-}
-
-function getTypesTemplate(name: string) {
-  return `export interface ${name}Props {
-  // Props
-};
-`;
-}
-
-async function updateParentIndex(parentDir: string) {
-    const indexPath = path.join(parentDir, 'index.ts');
-    
-    try {
-        const items = await fs.readdir(parentDir, { withFileTypes: true });
-        const components = items
-            .filter(dirent => dirent.isDirectory())
-            .map(dirent => dirent.name);
-
-        const content = components
-            .map(component => `export { ${component} } from './${component}';`)
-            .join('\n') + '\n';
-
-        await fs.writeFile(indexPath, content);
-        console.log(chalk.green(`✅ Parent index.ts updated!`));
-    } catch (error) {
-        if (error instanceof Error && 'code' in error) {
-            const nodeError = error as NodeJS.ErrnoException;
-            if (nodeError.code === 'ENOENT') {
-                await fs.ensureDir(parentDir);
-                await fs.writeFile(indexPath, '');
-                return updateParentIndex(parentDir);
-            }
-        }
-        throw error;
-    }
+    await updateParentIndex(baseDir, type);
 }
 
 init();
