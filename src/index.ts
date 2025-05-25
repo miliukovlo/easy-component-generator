@@ -110,7 +110,7 @@ const program = new Command();
 program
     .name('easy-gen')
     .description('CLI for generating React components and other code files')
-    .version('1.0.0');
+    .version('1.2.2');
 
 // Общие флаги
 program
